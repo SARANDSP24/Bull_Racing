@@ -1,0 +1,80 @@
+/* Reset */
+body, h1, h2, p, ul, ol, li, form, input, button, table, th, td {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* Form */
+form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Table */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+/* Inputs */
+input[type="text"], input[type="button"] {
+    width: calc(100% - 16px);
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Buttons */
+input[type="button"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+input[type="button"]:hover {
+    background-color: #45a049;
+}
+
+/* Result */
+.result {
+    margin-top: 20px;
+}
+
+.result label, .result span {
+    display: block;
+}
+
+/* Stopwatch */
+#stopwatch {
+    margin-top: 20px;
+    font-size: 24px;
+    text-align: center;
+}

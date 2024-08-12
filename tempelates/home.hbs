@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cow Running Calculator</title>
+    <style>
+        /* Reset */
+        body, h1, h2, p, ul, ol, li, form, input, button, table, th, td {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* Form */
+        form {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Inputs */
+        input[type="text"], input[type="button"] {
+            width: calc(100% - 16px);
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        /* Buttons */
+        input[type="button"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="button"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Result */
+        .result {
+            margin-top: 20px;
+        }
+
+        .result label, .result span {
+            display: block;
+        }
+
+        /* Stopwatch */
+        #stopwatch {
+            margin-top: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<form id="runningForm">
+    <div class="table-container">
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th>Cow's Name</th>
+                    <th>Registration Number</th>
+                    <th>1st Time Running (seconds)</th>
+                    <th>2nd Time Running (seconds)</th>
+                    <th>Total Running (seconds)</th>
+                    <th>Average Running (seconds)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="row1">
+                    <td><input type="text" class="cow-name" placeholder="Cow Name"></td>
+                    <td><input type="text" class="registration-number" placeholder="Registration Number"></td>
+                    <td><input type="text" class="first-run"></td>
+                    <td><input type="text" class="second-run"></td>
+                    <td><span class="total-running">0.00</span></td>
+                    <td><span class="average-running">0.00</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <input type="button" value="Add Row" onclick="addRow()">
+    <input type="button" value="Delete Row" onclick="deleteRow()">
+    <input type="button" value="Calculate" onclick="calculateRunning()">
+    
+    <div class="result">
+        <label>Total Running (seconds):</label>
+        <span id="totalTime">0.00</span>
+        <br>
+        <label>Average Running (seconds):</label>
+        <span id="averageTime">0.00</span>
+    </div>
+    
+    <div id="stopwatch">00:00:00</div>
+    <input type="button" value="Start Stopwatch" onclick="startStopwatch()">
+    <input type="button" value="Stop Stopwatch" onclick="stopStopwatch()">
+    <input type="button" value="Reset Stopwatch" onclick="resetStopwatch()">
+    
+    <!-- Finish button -->
+    <input type="button" value="Finish" onclick="finishAndRedirect()">
+</form>
+
+<script>
+    let rowCount = 1; // Initialize row count
+    let stopwatchInterval;
+    let startTime = 0;
+    let elapsedTime = 0;
+    let running = false;
+
+    function addRow() {
+        rowCount++; // Increment row count
+
+        const table = document.getElementById("dataTable").getElementsByTagName('tbody')[0];
+        const newRow = table.insertRow();
+        
+        const cell1 = newRow.insertCell(0);
+        const cell2 = newRow.insertCell(1);
+        const cell3 = newRow.insertCell(2);
+        const cell4 = newRow.insertCell(3);
+        const cell5 = newRow.insertCell(4);
+        const cell6 = newRow.insertCell(5);
+        
+        cell1.innerHTML = `<input type="text" class="cow-name" placeholder="Cow Name">`;
+        cell2.innerHTML = `<input type="text" class="registration-number" placeholder="Registration Number">`;
+        cell3.innerHTML = `<input type="text" class="first-run">`;
+        cell4.innerHTML = `<input type="text" class="second-run">`;
+        cell5.innerHTML = `<span class="total-running">0.00</span>`;
+        cell6.innerHTML = `<span class="average-running">0.00</span>`;
+    }
+
+    function deleteRow() {
+        if (rowCount > 1) { // Ensure there's at least one row to delete
+            document.getElementById("dataTable").deleteRow(rowCount);
+            rowCount--; // Decrement row count
+        } else {
+            alert("Cannot delete the first row!");
+        }
+    }
+
+    function startStopwatch() {
+        if (!running) {
+            startTime = Date.now() - elapsedTime;
+            stopwatchInterval = setInterval(updateStopwatch, 10); // Update every 10 milliseconds
+            running = true;
+        }
+    }
+
+    function stopStopwatch() {
+        if (running) {
+            clearInterval(stopwatchInterval);
+            running = false;
+        }
+    }
+
+    function resetStopwatch() {
+        clearInterval(stopwatchInterval);
+        elapsedTime = 0;
+        updateStopwatchDisplay();
+        running = false;
+    }
+
+    function updateStopwatch() {
+        elapsedTime = Date.now() - startTime;
+        updateStopwatchDisplay();
+    }
+
+    function updateStopwatchDisplay() {
+        const milliseconds = elapsedTime % 1000;
+        const seconds = Math.floor((elapsedTime / 1000) % 60);
+        const minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
+        const hours = Math.floor((elapsedTime / (1000 * 60 * 60)) % 24);
+        document.getElementById("stopwatch").textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
+    }
+
+    function calculateRunning() {
+        let totalRunning = 0;
+        let rowCount = 0;
+
+        const rows = document.querySelectorAll("#dataTable tbody tr");
+
+        rows.forEach(row => {
+            const firstTime = parseFloat(row.querySelector(".first-run").value) || 0;
+            const secondTime = parseFloat(row.querySelector(".second-run").value) || 0;
+
+            const totalTime = firstTime + secondTime;
+            const averageTime = totalTime / 2;
+
+            row.querySelector(".total-running").textContent = totalTime.toFixed(2);
+            row.querySelector(".average-running").textContent = averageTime.toFixed(2);
+
+            totalRunning += totalTime;
+            rowCount++;
+        });
+
+        document.getElementById("totalTime").textContent = totalRunning.toFixed(2);
+        document.getElementById("averageTime").textContent = (totalRunning / rowCount).toFixed(2);
+    }
+
+    function finishAndRedirect() {
+        // Calculate running times before redirecting
+        calculateRunning();
+
+        // Redirect to the next page
+        window.location.href = '/nextpage';
+    }
+</script>
+
+</body>
+</html>
